@@ -1,0 +1,213 @@
+$primary-color: #007BFF;
+$primary-hover-color: #0056b3;
+$secondary-color: #ff3232;
+$secondary-hover-color: #ff0f0f;
+$border-radius: 10px;
+$padding-button: 10px 20px;
+$font-family: Arial, sans-serif;
+$box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+@mixin border-radius($radius) {
+  border-radius: $radius;
+}
+
+@mixin box-shadow($shadow) {
+  box-shadow: $shadow;
+}
+
+html {
+  margin: 10px;
+}
+
+body {
+  font-family: $font-family;
+}
+
+button {
+    background-color: $primary-color;
+    border: none;
+    color: white;
+    padding: $padding-button;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 8px 4px;
+    cursor: pointer;
+    @include border-radius($border-radius);
+    transition: background-color 0.3s ease, transform 0.2s;
+  
+    &:hover {
+      background-color: $primary-hover-color;
+      transform: translateY(-2px);
+    }
+  
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+input,
+select {
+  border: 2px solid $primary-color;
+  @include border-radius($border-radius);
+  padding: 5px;
+  font-size: 15px;
+  margin: 4px 2px;
+  display: inline-block;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: $primary-hover-color;
+    outline: none;
+  }
+}
+
+.package {
+  display: flex;
+  position: relative;
+}
+
+.block {
+  width: 20px;
+  height: 20px;
+  background-color: black;
+  border: 1px solid black;
+  position: absolute;
+}
+
+.cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  position: relative;
+}
+
+@mixin type-color($color) {
+  background-color: $color;
+}
+
+.type-I {
+  @include type-color(blue);
+}
+
+.type-O {
+  @include type-color(red);
+}
+
+.type-T {
+  @include type-color(green);
+}
+
+.type-L {
+  @include type-color(orange);
+}
+
+.type-S {
+  @include type-color(purple);
+}
+
+.conveyor-belt {
+  position: relative;
+  margin-bottom: 5px;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  border: 2px solid #ccc;
+  @include border-radius(8px);
+  @include box-shadow($box-shadow);
+}
+
+.conveyor-belt-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.truck {
+  position: relative;
+  border: 1px solid #000;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  @include border-radius(10px);
+
+  &[data-truck-type="koud-transport"] {
+    border-color: rgb(0, 123, 255);
+    border-width: 3px;
+  }
+
+  &[data-truck-type="breekbaar-transport"] {
+    border-color: rgb(255, 0, 0);
+    border-width: 3px;
+  }
+
+  &[data-truck-type="algemeen-transport"] {
+    border-color: rgb(0, 128, 0);
+    border-width: 3px;
+  }
+
+  &[data-truck-type="pallets"] {
+    border-color: rgb(255, 165, 0);
+    border-width: 5px;
+  }
+
+  &[data-truck-type="snelkoerier"] {
+    border-color: rgb(128, 0, 128);
+    border-width: 3px;
+  }
+
+  .block {
+    border-color: yellow;
+  }
+}
+
+.truck-form-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+  @include box-shadow(0px 0px 10px rgba(0, 0, 0, 0.1));
+
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+  }
+}
+
+.remove-truck-button {
+  padding: 5px 10px;
+  background-color: $secondary-color;
+  color: white;
+  border: none;
+  @include border-radius($border-radius);
+
+  &:hover {
+    background-color: $secondary-hover-color;
+  }
+}
+
+.drive-out {
+  animation: drive-out 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+@keyframes drive-out {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+}
