@@ -80,23 +80,23 @@ select:focus {
 }
 
 .type-I {
-  background-color: blue;
+  background-color: blue !important;
 }
 
 .type-O {
-  background-color: red;
+  background-color: red !important;
 }
 
 .type-T {
-  background-color: green;
+  background-color: green !important;
 }
 
 .type-L {
-  background-color: orange;
+  background-color: orange !important;
 }
 
 .type-S {
-  background-color: purple;
+  background-color: purple !important;
 }
 
 .conveyor-belt {
@@ -207,8 +207,6 @@ select:focus {
   margin-bottom: 20px;
   font-family: "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   float: left;
-  display: block;
-  clear: both;
 }
 #weather-container label {
   display: block;
