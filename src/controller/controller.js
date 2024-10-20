@@ -1,17 +1,25 @@
 import PackageService from '../services/packageService.js';
+import WeatherService from '../services/weatherService.js';
+import TruckService from '../services/truckService.js';
 import ConveyorBelt from '../model/conveyorBelt.js';
+import LoadingBay from '../model/loadingBay.js';
 import ConveyorBeltView from '../view/conveyorBeltView.js';
 import Truck from '../model/truck.js';
 import TruckView from '../view/truckView.js';
-import LoadingBay from '../model/loadingBay.js';
+import TruckFormView from '../view/truckFormView.js';
+import WeatherFormView from '../view/weatherFormView.js';
+
+const API_KEY = 'f3500d75fca4725b12c2978ff64c7538';
 
 export default class Controller {
     constructor(mainView) {
         this.mainView = mainView;
+        this.mainView.setController(this);
+        this.weatherFormView = new WeatherFormView();
         this.packageService = new PackageService();
-        this.loadingBays = [new LoadingBay(1), new LoadingBay(2)]; 
+        this.weatherService = new WeatherService(API_KEY); 
+        this.loadingBays = [new LoadingBay(1), new LoadingBay(2)];
         this.currentLoadingBayIndex = 0;
-        this.currentCity = 'Amsterdam';
 
         this.addConveyorBeltButton = document.getElementById('add-conveyor-belt');
         this.removeConveyorBeltButton = document.getElementById('remove-conveyor-belt');
@@ -21,6 +29,7 @@ export default class Controller {
         this.removeConveyorBeltButton.addEventListener('click', this.removeConveyorBelt.bind(this));
         this.switchLoadingBayButton.addEventListener('click', this.switchLoadingBay.bind(this));
         document.addEventListener('truckFormSubmit', this.handleTruckFormSubmit.bind(this));
+        document.addEventListener('weatherFormSubmit', this.handleWeatherFormSubmit.bind(this));
 
         const truckContainer = document.getElementById('truck-container');
 
@@ -49,6 +58,15 @@ export default class Controller {
         event.preventDefault();
     }
 
+    showTruckForm() {
+        if (!this.currentCity) {
+            this.mainView.showWeatherMessage('Vul eerst een stad/dorp in.');
+            return;
+        }
+        const truckFormView = new TruckFormView(this.weatherService, this.weatherData);
+        document.body.appendChild(truckFormView.getFormContainer());
+    }
+
     handleDrop(event) {
         event.preventDefault();
         const packageIndex = parseInt(event.dataTransfer.getData('package-index'));
@@ -68,12 +86,10 @@ export default class Controller {
                 truckView.render(); 
                 this.renderCurrentLoadingBay();
             } else {
-                console.log("Package did not fit in the truck");
                 belt.addPackage(droppedPackage);
             }
         }
     }
-    
     
 
     async addConveyorBelt() {
@@ -110,13 +126,28 @@ export default class Controller {
             });
         });
 
-        console.log("Conveyor belt started.");
         setInterval(async () => {
             const randomPackage = await this.packageService.getRandomPackage();
-            console.log("Random package added to conveyor belt.");
             randomPackage.position = { x: 0, y: 0 };
             conveyorBelt.addPackage(randomPackage);
         }, 10000);
+    }
+
+    async handleWeatherFormSubmit(event) {
+        const { city } = event.detail;
+        if (!city) {
+            this.mainView.showWeatherMessage('Vul een stad/dorp in.');
+            return;
+        }
+
+        try {
+            this.currentCity = city;
+            this.weatherData = await this.weatherService.getWeather(this.currentCity);
+            this.mainView.showWeatherInfo(this.weatherData);
+            this.mainView.enableButtons();
+        } catch (error) {
+            this.mainView.showWeatherMessage(`Kon het weer niet ophalen, vul het opnieuw in: ` + error);
+        }
     }
 
     handleTruckFormSubmit(event) {

@@ -18,10 +18,10 @@ export default class ConveyorBelt {
   startConveyorBelt(callback) {
       this.intervalId = setInterval(() => {
           this.packages.forEach(pkg => {
-              pkg.position.x += 1; // Adjust movement speed as needed
+              pkg.position.x += 1;
           });
-          callback(this.packages); // Callback to update the view
-      }, 1000); // Update every second
+          callback(this.packages);
+      }, 1000);
   }
 
   stopConveyorBelt() {
