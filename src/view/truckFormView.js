@@ -1,22 +1,44 @@
+import TruckService from '../services/truckService.js';
+
 export default class TruckFormView {
-    constructor() {
+    constructor(weatherService, weatherData) {
+        this.weatherService = weatherService;
+        this.weatherData = weatherData;
         this.currentStep = 0;
         this.steps = [
             { label: "Voer de lengte van de vrachtwagen in:", inputId: "truck-length" },
             { label: "Voer de breedte van de vrachtwagen in:", inputId: "truck-width" },
             { label: "Voer het aankomst interval in (in secondes):", inputId: "truck-interval" },
             { 
-                label: "Select truck type:", 
+                label: "Selecteer het type vrachtwagen:", 
                 inputId: "truck-type", 
                 type: "select", 
-                options: ["Koud transport", "Breekbaar transport", "Algemeen transport", "Pallets", "Snelkoerier"]
+                options: this.getValidTruckTypes()
             }
         ];
 
         this.formContainer = document.createElement('div');
         this.formContainer.id = 'truck-form-container';
 
+        this.messageContainer = document.createElement('div');
+        this.messageContainer.id = 'message';
+        this.messageContainer.style.color = 'red';
+
         this.renderStep();
+    }
+
+    getValidTruckTypes() {
+        const validTypes = [];
+        const weather = this.weatherData;
+        const truckTypes = ["Koud transport", "Breekbaar transport", "Algemeen transport", "Pallets", "Snelkoerier"];
+
+        truckTypes.forEach(type => {
+            if (TruckService.canTruckDrive(weather, type)) {
+                validTypes.push(type);
+            }
+        });
+
+        return validTypes;
     }
 
     renderStep() {
@@ -42,7 +64,7 @@ export default class TruckFormView {
         }
 
         const nextButton = document.createElement('button');
-        nextButton.textContent = this.currentStep < this.steps.length - 1 ? 'Volgende' : 'Submit';
+        nextButton.textContent = this.currentStep < this.steps.length - 1 ? 'Volgende' : 'Versturen';
         nextButton.addEventListener('click', () => this.handleNext(input));
 
         this.formContainer.appendChild(label);
@@ -55,18 +77,21 @@ export default class TruckFormView {
             prevButton.addEventListener('click', () => this.handlePrevious());
             this.formContainer.appendChild(prevButton);
         }
+
+        this.formContainer.appendChild(this.messageContainer);
+        this.showMessage('');
     }
 
     handleNext(input) {
         const value = input.value.trim();
 
         if (!value) {
-            alert("Vul het veld in.");
+            this.showMessage("Vul het veld in.");
             return;
         }
 
         if ((input.id === 'truck-length' || input.id === 'truck-width') && (isNaN(value) || value < 2 || value > 20)) {
-            alert("Voer een geldig getal in, tussen de 2 en de 20.");
+            this.showMessage("Voer een geldig getal in, tussen de 2 en de 20.");
             return;
         }
 
@@ -94,6 +119,10 @@ export default class TruckFormView {
         document.dispatchEvent(customEvent);
 
         this.formContainer.remove();
+    }
+
+    showMessage(message) {
+        this.messageContainer.innerText = message;
     }
 
     getFormContainer() {

@@ -62,6 +62,19 @@ body {
 button {
     @include button-style($primary-color, $primary-hover-color);
     margin: 8px 4px;
+
+    &:disabled {
+        background-color: $background-dark !important;
+        color: $text-color-light !important;
+        cursor: not-allowed;
+        box-shadow: none; 
+        transform: none;
+        pointer-events: none;
+
+        &:hover {
+            background-color: $background-dark;
+        }
+    }
 }
 
 input,
@@ -232,5 +245,66 @@ select {
     100% {
         transform: translateX(1000px);
         opacity: 0;
+    }
+}
+
+#weather-container {
+    background-color: $background-light;
+    border: 1px solid $background-dark;
+    padding: 15px;
+    @include border-radius($border-radius);
+    @include box-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    max-width: 300px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    font-family: $font-family;
+    float: left;
+    display: block;
+    clear: both; 
+
+    label {
+        display: block;
+        font-size: $font-size-base;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: $text-color;
+    }
+
+    input {
+        width: calc(100% - 10px);
+        padding: 8px;
+        border: 1px solid $background-dark;
+        margin-bottom: 10px;
+        @include border-radius($border-radius);
+        @include transition(all, $transition-time);
+        font-size: 15px;
+        box-sizing: border-box;
+
+        &:focus {
+            border-color: $primary-hover-color;
+            outline: none;
+            @include box-shadow(0 0 6px rgba(0, 123, 255, 0.4));
+        }
+    }
+
+    button {
+        @include button-style($primary-color, $primary-hover-color);
+        width: 100%;
+        padding: 8px 15px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+
+    #weather-message {
+        color: $secondary-color;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    #weather-info-container {
+        padding: 10px;
+        background-color: $background-dark;
+        @include border-radius($border-radius);
+        font-size: 14px;
     }
 }

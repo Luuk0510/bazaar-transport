@@ -18,10 +18,8 @@ export default class TruckView {
         console.log('rendering truck');
         this.container.innerHTML = ''; 
 
-        // Set the data-truck-index attribute
         this.container.setAttribute('data-truck-index', this.truck.index);
 
-        // Create truck grid
         const grid = document.createElement('div');
         grid.style.display = 'grid';
         grid.style.gridTemplateColumns = `repeat(${this.truck.width}, 20px)`;
