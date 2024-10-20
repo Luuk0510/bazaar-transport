@@ -1,4 +1,4 @@
-import PackageView from './PackageView.js';
+import PackageView from './packageView.js';
 
 export default class ConveyorBeltView {
     constructor(index) { 
